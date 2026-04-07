@@ -7,129 +7,38 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(to bottom, #ff7bc1, #ffb3d9, #ffffff);
-            min-height: 100vh;
-            margin: 0;
-            scroll-behavior: smooth;
-        }
+        /* MANTENGO TUS ESTILOS ORIGINALES */
+        body { font-family: 'Roboto', sans-serif; background: linear-gradient(to bottom, #ff7bc1, #ffb3d9, #ffffff); min-height: 100vh; margin: 0; scroll-behavior: smooth; }
         .oswald { font-family: 'Oswald', sans-serif; }
         .header-text { color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
-        
-        .tab-btn {
-            background-color: rgba(255, 255, 255, 0.3);
-            color: #4a3b4d;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-        .tab-btn.active {
-            background: linear-gradient(to bottom, #e6338a, #c2185b);
-            color: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            border-color: transparent;
-        }
-        
-        .category-tab {
-            border-bottom: 3px solid transparent;
-            color: #94a3b8;
-            font-weight: 900;
-            text-transform: uppercase;
-            font-size: 12px;
-            padding: 10px 0;
-            transition: all 0.3s;
-        }
-        .category-tab.active {
-            border-bottom: 3px solid #e6338a;
-            color: #e6338a;
-        }
-
+        .tab-btn { background-color: rgba(255, 255, 255, 0.3); color: #4a3b4d; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease; }
+        .tab-btn.active { background: linear-gradient(to bottom, #e6338a, #c2185b); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border-color: transparent; }
+        .category-tab { border-bottom: 3px solid transparent; color: #94a3b8; font-weight: 900; text-transform: uppercase; font-size: 12px; padding: 10px 0; transition: all 0.3s; }
+        .category-tab.active { border-bottom: 3px solid #e6338a; color: #e6338a; }
         .view-section, .sub-view { display: none; }
-        .view-section.active, .sub-view.active {
-            display: block;
-            animation: slideIn 0.3s ease-out;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        #modal-container, #dni-modal-container, #confirm-modal, #match-detail-modal, #create-match-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.9);
-            z-index: 200;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-            padding: 20px;
-        }
-
-        .id-card {
-            width: 330px;
-            height: 210px;
-            background: white;
-            border-radius: 18px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-            border: 2px solid rgba(255,255,255,0.8);
-            margin: auto;
-        }
-        .id-card-header {
-            background: linear-gradient(to right, #e6338a, #c2185b);
-            height: 55px;
-            padding: 10px 15px;
-            color: white;
-            display: flex;
-            align-items: center; gap: 10px;
-        }
+        .view-section.active, .sub-view.active { display: block; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        #modal-container, #dni-modal-container, #confirm-modal, #match-detail-modal, #create-match-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(10px); padding: 20px; }
+        .id-card { width: 330px; height: 210px; background: white; border-radius: 18px; position: relative; overflow: hidden; box-shadow: 0 15px 30px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.8); margin: auto; }
+        .id-card-header { background: linear-gradient(to right, #e6338a, #c2185b); height: 55px; padding: 10px 15px; color: white; display: flex; align-items: center; gap: 10px; }
         .id-card-body { display: flex; padding: 15px; gap: 15px; position: relative; }
-        .id-photo {
-            width: 90px; height: 110px;
-            background: #f1f5f9; border: 3px solid #ff7bc1; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden; z-index: 10;
-        }
+        .id-photo { width: 90px; height: 110px; background: #f1f5f9; border: 3px solid #ff7bc1; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; z-index: 10; }
         .id-photo img { width: 100%; height: 100%; object-fit: cover; }
         .id-details { flex: 1; z-index: 10; }
         .id-label { font-size: 8px; color: #94a3b8; text-transform: uppercase; font-weight: 900; margin-bottom: -1px; }
         .id-value { font-size: 13px; color: #1e293b; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; line-height: 1.1; }
-        .id-footer {
-            position: absolute; bottom: 0; width: 100%; height: 28px;
-            background: #2d1b2e; display: flex; align-items: center; justify-content: center;
-            font-size: 10px; color: #ffb3d9; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase;
-        }
+        .id-footer { position: absolute; bottom: 0; width: 100%; height: 28px; background: #2d1b2e; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #ffb3d9; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; }
         .watermark { position: absolute; right: 10px; bottom: 40px; width: 80px; height: 80px; opacity: 0.1; pointer-events: none; }
-
-        .loader {
-            border: 3px solid #f3f3f3; border-top: 3px solid #e6338a; border-radius: 50%;
-            width: 18px; height: 18px; animation: spin 1s linear infinite; display: inline-block;
-        }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #e6338a; border-radius: 50%; width: 18px; height: 18px; animation: spin 1s linear infinite; display: inline-block; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        #btnVolverArriba {
-            display: none; position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 90;
-            background: linear-gradient(to bottom, #ff4db8, #d63384); color: white;
-            padding: 0.75rem; border-radius: 9999px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-            border: 2px solid white; transition: all 0.3s ease;
-        }
-        
+        #btnVolverArriba { display: none; position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 90; background: linear-gradient(to bottom, #ff4db8, #d63384); color: white; padding: 0.75rem; border-radius: 9999px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); border: 2px solid white; transition: all 0.3s ease; }
         .category-btn-active { background-color: #ff4db8; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .category-btn-inactive { background-color: rgba(255, 255, 255, 0.3); color: #4a3b4d; }
-        
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        .date-tab {
-            white-space: nowrap; padding: 8px 16px; border-radius: 12px;
-            font-weight: 700; color: #4a3b4d; background: white;
-            border: 2px solid transparent; transition: all 0.2s ease; cursor: pointer;
-        }
+        .date-tab { white-space: nowrap; padding: 8px 16px; border-radius: 12px; font-weight: 700; color: #4a3b4d; background: white; border: 2px solid transparent; transition: all 0.2s ease; cursor: pointer; }
         .date-tab.active { background: white; border-color: #ff4db8; color: #ff4db8; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .new-date-btn { background: #e2e8f0; color: #64748b; }
-
         .table-card { background: white; border-radius: 2rem; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.3); }
         .table-header-cell { padding: 12px 6px; font-size: 9px; text-transform: uppercase; font-weight: 900; color: #94a3b8; letter-spacing: 0.05em; }
         .table-row { border-bottom: 1px solid #f1f5f9; transition: background 0.2s; }
@@ -137,18 +46,13 @@
         .table-row:nth-child(even) { background-color: #fafafa; }
         .table-cell { padding: 14px 6px; font-size: 11px; font-weight: 700; color: #334155; }
         .pts-cell { background-color: #fff1f8; color: #e6338a; font-weight: 900; font-size: 13px; }
-
-        .fichaje-type-btn {
-            flex: 1; padding: 10px; font-size: 10px; font-weight: 900; text-transform: uppercase;
-            border-radius: 12px; transition: all 0.3s;
-        }
+        .fichaje-type-btn { flex: 1; padding: 10px; font-size: 10px; font-weight: 900; text-transform: uppercase; border-radius: 12px; transition: all 0.3s; }
         .fichaje-type-btn.active { background: #4a3b4d; color: white; }
         .fichaje-type-btn.inactive { background: #f1f5f9; color: #94a3b8; }
     </style>
 </head>
 <body class="pb-20">
 
-    <!-- Modales -->
     <div id="confirm-modal">
         <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center" onclick="event.stopPropagation()">
             <h3 id="confirm-title" class="oswald text-2xl font-bold uppercase text-gray-800 mb-2">¿Estás seguro?</h3>
@@ -160,7 +64,6 @@
         </div>
     </div>
 
-    <!-- Modal Nuevo Partido -->
     <div id="create-match-modal">
         <div class="bg-white rounded-[2rem] p-8 max-w-sm w-full shadow-2xl relative" onclick="event.stopPropagation()">
             <h3 class="oswald text-2xl font-black text-gray-800 uppercase mb-6 text-center tracking-tight">Programar Partido</h3>
@@ -181,7 +84,6 @@
         </div>
     </div>
 
-    <!-- Modal Detalle de Partido -->
     <div id="match-detail-modal">
         <div class="bg-white rounded-[2.5rem] p-6 max-w-md w-full shadow-2xl relative max-h-[90vh] overflow-y-auto no-scrollbar" onclick="event.stopPropagation()">
             <button onclick="cerrarDetallePartido()" class="absolute top-6 right-6 text-gray-300 hover:text-gray-600 transition-colors">
@@ -206,7 +108,6 @@
         </div>
     </div>
 
-    <!-- Modales Visualización -->
     <div id="modal-container" onclick="cerrarCarnet()">
         <div class="p-2 relative" onclick="event.stopPropagation()">
             <button onclick="cerrarCarnet()" class="absolute -top-12 right-0 text-white font-bold text-4xl bg-black/40 w-12 h-12 rounded-full flex items-center justify-center">×</button>
@@ -234,11 +135,9 @@
             <h1 class="oswald text-4xl font-black uppercase leading-none header-text tracking-tighter text-center">LA LIGA DE LAS<br>NENAS</h1>
             <img src="LOGO.LIGADELASNENAS.jpeg" alt="Logo" class="w-16 h-16 bg-white rounded-full p-1 shadow-lg object-contain border-2 border-pink-300" onerror="this.src='https://cdn-icons-png.flaticon.com/512/53/53283.png'">
         </div>
-        <div class="h-1.5 bg-black opacity-10 mt-4 mx-auto w-40 rounded-full shadow-inner"></div>
     </header>
 
     <main class="max-w-md mx-auto px-4 mt-4 text-center">
-        <!-- Navegación Principal -->
         <div class="grid grid-cols-4 gap-2 mb-8 leading-none">
             <button onclick="switchView('posiciones', this)" class="tab-btn active rounded-2xl py-4 flex flex-col items-center justify-center gap-1 shadow-sm">
                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
@@ -258,7 +157,6 @@
             </button>
         </div>
 
-        <!-- Secciones -->
         <section id="vista-posiciones" class="view-section active">
             <div class="flex gap-2 mb-8 overflow-x-auto pb-4 no-scrollbar sticky top-2 z-20">
                 <button onclick="irACategoria('cat-general', this)" class="cat-btn category-btn-active px-5 py-2.5 rounded-xl text-[11px] font-black transition-all uppercase whitespace-nowrap">General</button>
@@ -271,7 +169,6 @@
             <div id="tablas-dinamicas" class="space-y-12 text-left"></div>
         </section>
 
-        <!-- Sección FIXTURE -->
         <section id="vista-fechas" class="view-section leading-none">
             <h2 class="oswald text-3xl font-bold uppercase mb-6 text-[#2d1b2e] tracking-tight">Fixture y Resultados</h2>
             <div class="flex items-center gap-3 overflow-x-auto pb-4 no-scrollbar mb-6" id="contenedor-pestañas-fechas"></div>
@@ -285,7 +182,6 @@
             <div id="contenedor-jornadas-historial" class="space-y-4 text-left min-h-[200px]"></div>
         </section>
 
-        <!-- Sección EQUIPOS -->
         <section id="vista-equipos" class="view-section leading-none">
             <div id="subvista-equipos-lista" class="sub-view active">
                 <h2 class="oswald text-3xl font-bold uppercase mb-6 text-[#2d1b2e]">Clubes Registrados</h2>
@@ -328,18 +224,13 @@
             </div>
         </section>
 
-        <!-- Sección FICHAR -->
         <section id="vista-fichar" class="view-section leading-none">
             <h2 class="oswald text-3xl font-bold uppercase mb-6 text-[#2d1b2e] tracking-tight">Fichaje Oficial</h2>
-            
             <div class="bg-white/40 p-6 rounded-3xl shadow-lg border border-white/30 mb-10 text-center">
-                
-                <!-- Selector de tipo de fichaje -->
                 <div class="flex bg-gray-100 p-1 rounded-2xl mb-8 gap-1">
                     <button onclick="setTipoFichaje('jugadora')" id="btn-type-jugadora" class="fichaje-type-btn active">Jugadora</button>
                     <button onclick="setTipoFichaje('delegado')" id="btn-type-delegado" class="fichaje-type-btn inactive">Delegado</button>
                 </div>
-
                 <div id="fichaje-photos-section" class="flex justify-center gap-8 mb-8 leading-none">
                     <div class="flex flex-col items-center">
                         <div class="relative">
@@ -358,12 +249,10 @@
                         <span class="text-[8px] font-black text-pink-700 mt-2 uppercase tracking-widest">Foto DNI</span>
                     </div>
                 </div>
-
                 <button id="btn-verificar-ia" onclick="ejecutarVerificacionDefinitiva()" class="w-full mb-6 py-3 bg-indigo-600 text-white font-black uppercase rounded-xl text-[10px] shadow-md flex items-center justify-center gap-2 active:scale-95 transition-all">
                     <span id="ia-btn-text">Verificar Identidad con IA</span>
                 </button>
                 <div id="ia-result-box" class="hidden p-3 rounded-xl mb-4 text-[10px] font-bold border"></div>
-
                 <div class="space-y-4 text-left leading-none">
                     <div class="grid grid-cols-2 gap-3 leading-none">
                         <input type="text" id="apellidoJugadora" placeholder="APELLIDO" class="w-full px-4 py-3 rounded-xl bg-white border-none font-bold text-gray-700 shadow-sm outline-none uppercase tracking-widest">
@@ -386,30 +275,186 @@
 
     <button id="btnVolverArriba" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Ir al inicio"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></svg></button>
 
-    <script>
-        // --- CONFIGURACIÓN ---
-        const apiKey = ""; 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getDatabase, ref, set, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+
+        // CONFIGURACIÓN DE TU FIREBASE (COPIADA DE TU MENSAJE)
+        const firebaseConfig = {
+          apiKey: "AIzaSyB1Z0ynU3gi9psilI-nF4T9t4b4l7U1O7Q",
+          authDomain: "liga-de-las-nenas.firebaseapp.com",
+          databaseURL: "https://liga-de-las-nenas-default-rtdb.firebaseio.com",
+          projectId: "liga-de-las-nenas",
+          storageBucket: "liga-de-las-nenas.firebasestorage.app",
+          messagingSenderId: "1072749803983",
+          appId: "1:1072749803983:web:a1010f57fffb924a01baba",
+          measurementId: "G-GZNLGMZYYL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // VARIABLES GLOBALES (Ahora se llenan desde la BD)
+        window.equipos = [];
+        window.partidos = [];
+        window.jugadoras = [];
+        window.identidadesVerificadas = {};
+        window.jornadaActualNum = 1;
+        window.totalJornadas = 1;
+        window.tipoFichajeActual = "jugadora";
+        window.categorias = ["2011/12", "2013/14", "2015/16", "2017/18", "2019/20"];
+
+        // --- ESCUCHA DE DATOS EN TIEMPO REAL ---
+        onValue(ref(db, 'liga'), (snapshot) => {
+            const data = snapshot.val() || {};
+            window.equipos = data.equipos ? Object.values(data.equipos) : [];
+            window.partidos = data.partidos ? Object.values(data.partidos) : [];
+            window.jugadoras = data.jugadoras ? Object.values(data.jugadoras) : [];
+            window.identidadesVerificadas = data.identidades || {};
+            window.totalJornadas = data.totalJornadas || 1;
+            actualizarTodo();
+        });
+
+        // --- FUNCIONES QUE ESCRIBEN EN LA NUBE ---
+        window.agregarEquipo = function() {
+            const n = document.getElementById('nombreEquipo').value.trim();
+            if (!n) return;
+            const newRef = push(ref(db, 'liga/equipos'));
+            set(newRef, { id: Date.now(), nombre: n.toUpperCase(), logo: window.logoClubTemporal || null });
+            document.getElementById('nombreEquipo').value = "";
+            window.resetFormLogo();
+            showStatus("Equipo guardado en la nube");
+        };
+
+        window.borrarClubAction = function(id) {
+            openConfirmModal("Eliminar Club", "¿Borrar este club?", () => {
+                // Buscamos la clave en el objeto original (esto es más avanzado pero Firebase lo requiere)
+                onValue(ref(db, 'liga/equipos'), (snap) => {
+                    snap.forEach((child) => {
+                        if(child.val().id == id) remove(ref(db, `liga/equipos/${child.key}`));
+                    });
+                }, { onlyOnce: true });
+                showStatus("Club eliminado");
+            });
+        };
+
+        window.ficharPersona = function() {
+            const ape = document.getElementById('apellidoJugadora').value.trim();
+            const nom = document.getElementById('nombreJugadora').value.trim();
+            const d = document.getElementById('dniJugadora').value.trim();
+            const clId = document.getElementById('clubJugadora').value;
+            if (!ape || !nom || !clId || !d) return showStatus("Faltan datos básicos", true);
+            
+            let p = { id: Date.now(), nombre: `${ape} ${nom}`.toUpperCase(), dni: d, clubId: parseInt(clId), tipo: window.tipoFichajeActual, foto: window.fotoTemporal || null };
+            
+            if (window.tipoFichajeActual === 'jugadora') {
+                const fn = document.getElementById('fechaNacimientoJugadora').value;
+                if (!fn) return showStatus("Falta fecha de nacimiento", true);
+                let cat = calcularCategoria(fn);
+                if (!cat) return showStatus("Edad fuera de rango", true);
+                p.fechaNac = fn; p.cat = cat; p.fotoDni = window.fotoDniTemporal || null;
+            }
+
+            const newRef = push(ref(db, 'liga/jugadoras'));
+            set(newRef, p);
+
+            // Guardar verificación si existe
+            if(window.identidadesVerificadas[d]) {
+                set(ref(db, `liga/identidades/${d}`), window.identidadesVerificadas[d]);
+            }
+
+            showStatus("Fichaje exitoso");
+            document.getElementById('apellidoJugadora').value = ""; document.getElementById('nombreJugadora').value = ""; document.getElementById('dniJugadora').value = "";
+            window.resetFormFoto();
+        };
+
+        window.agregarCruceAlFixture = function() {
+            const elL = document.getElementById('equipoL'), elV = document.getElementById('equipoV');
+            const lId = parseInt(elL.value), vId = parseInt(elV.value);
+            if (!lId || !vId || lId === vId) return;
+            const newRef = push(ref(db, 'liga/partidos'));
+            set(newRef, { id: Date.now(), jornada: window.jornadaActualNum, lId: lId, vId: vId, resultados: {} });
+            cerrarNuevoPartido();
+        };
+
+        window.guardarResultadosPartidoActual = function() {
+            if (!window.partidoEditandoId) return;
+            let resultadosNuevos = {};
+            window.categorias.forEach(cat => {
+                const safeCat = cat.replace('/', '-');
+                const gL = document.getElementById(`valL-${safeCat}`).value, gV = document.getElementById(`valV-${safeCat}`).value;
+                const npL = document.getElementById(`npL-${safeCat}`).checked, npV = document.getElementById(`npV-${safeCat}`).checked;
+                if (gL !== "" || gV !== "" || npL || npV) { 
+                    resultadosNuevos[cat] = { gL: gL !== "" ? parseInt(gL) : 0, gV: gV !== "" ? parseInt(gV) : 0, npL: npL, npV: npV }; 
+                }
+            });
+
+            // Buscar el partido en la BD y actualizarlo
+            onValue(ref(db, 'liga/partidos'), (snap) => {
+                snap.forEach((child) => {
+                    if(child.val().id == window.partidoEditandoId) {
+                        update(ref(db, `liga/partidos/${child.key}`), { resultados: resultadosNuevos });
+                    }
+                });
+            }, { onlyOnce: true });
+            cerrarDetallePartido();
+        };
         
-        let identidadesVerificadas = {};
-        let equipos = []; 
-        let partidos = []; 
-        let jugadoras = []; 
-        let jornadaActualNum = 1; 
-        let totalJornadas = 1;
+        window.borrarJugadoraAction = function(id) {
+            openConfirmModal("Eliminar Persona", "¿Borrar esta ficha?", () => {
+                onValue(ref(db, 'liga/jugadoras'), (snap) => {
+                    snap.forEach((child) => {
+                        if(child.val().id == id) remove(ref(db, `liga/jugadoras/${child.key}`));
+                    });
+                }, { onlyOnce: true });
+            });
+        };
+
+        window.eliminarCruce = function(id) {
+            openConfirmModal("Eliminar Cruce", "¿Borrar este partido?", () => {
+                onValue(ref(ref(db, 'liga/partidos')), (snap) => {
+                    snap.forEach((child) => {
+                        if(child.val().id == id) remove(ref(db, `liga/partidos/${child.key}`));
+                    });
+                }, { onlyOnce: true });
+            });
+        };
+
+        window.agregarNuevaJornada = function() {
+            window.totalJornadas++;
+            set(ref(db, 'liga/totalJornadas'), window.totalJornadas);
+            window.seleccionarJornada(window.totalJornadas);
+        };
+        
+        window.eliminarJornadaActual = function() {
+            if (window.totalJornadas <= 1) return;
+            openConfirmModal("Eliminar Fecha", "¿Borrar toda la fecha actual?", () => {
+                // Borrar partidos de esta jornada
+                onValue(ref(db, 'liga/partidos'), (snap) => {
+                    snap.forEach((child) => {
+                        if(child.val().jornada == window.jornadaActualNum) remove(ref(db, `liga/partidos/${child.key}`));
+                    });
+                }, { onlyOnce: true });
+                window.totalJornadas--;
+                set(ref(db, 'liga/totalJornadas'), window.totalJornadas);
+                window.seleccionarJornada(1);
+            });
+        };
+
+    </script>
+
+    <script>
+        const apiKey = "AIzaSyB1Z0ynU3gi9psilI-nF4T9t4b4l7U1O7Q"; // Tu API de Gemini
         let fotoTemporal = null, fotoDniTemporal = null, logoClubTemporal = null;
         let clubActualId = null, categoriaActual = null, partidoEditandoId = null;
-        let tipoFichajeActual = "jugadora";
-        const categorias = ["2011/12", "2013/14", "2015/16", "2017/18", "2019/20"];
 
-        // --- SISTEMA UTILIDADES ---
         function showStatus(msg, isError = false) {
             const el = document.getElementById('status-message');
-            if (el) {
-                el.innerText = msg; el.style.backgroundColor = isError ? '#ef4444' : '#10b981';
-                el.classList.remove('hidden'); el.style.display = 'block';
-                setTimeout(() => { el.classList.add('hidden'); el.style.display = 'none'; }, 3000);
-            }
+            el.innerText = msg; el.style.backgroundColor = isError ? '#ef4444' : '#10b981';
+            el.classList.remove('hidden'); el.style.display = 'block';
+            setTimeout(() => { el.classList.add('hidden'); el.style.display = 'none'; }, 3000);
         }
+
         function openConfirmModal(title, message, callback) { document.getElementById('confirm-title').innerText = title; document.getElementById('confirm-message').innerText = message; document.getElementById('confirm-execute-btn').onclick = () => { callback(); closeConfirmModal(); }; document.getElementById('confirm-modal').style.display = 'flex'; }
         function closeConfirmModal() { document.getElementById('confirm-modal').style.display = 'none'; }
         function cerrarCarnet() { document.getElementById('modal-container').style.display = 'none'; document.body.style.overflow = 'auto'; }
@@ -433,7 +478,6 @@
             });
         }
 
-        // --- IA BIOMETRÍA ---
         async function ejecutarVerificacionDefinitiva() {
             const dniVal = document.getElementById('dniJugadora').value;
             const resB = document.getElementById('ia-result-box');
@@ -456,13 +500,12 @@
             finally { btn.disabled = false; btn.innerHTML = "Verificar Identidad con IA"; }
         }
 
-        // --- LÓGICA DE DATOS ---
-        function calcularEstadisticas(cF) { 
-            let stats = equipos.map(e => ({ id: e.id, nombre: e.nombre, logo: e.logo, pts: 0, pj: 0, g: 0, e: 0, p: 0, gf: 0, gc: 0, dg: 0 })); 
-            partidos.forEach(p => { 
-                categorias.forEach(cat => {
+        function calcularEstadisticas(cF) {
+             let stats = equipos.map(e => ({ id: e.id, nombre: e.nombre, logo: e.logo, pts: 0, pj: 0, g: 0, e: 0, p: 0, gf: 0, gc: 0, dg: 0 }));
+             partidos.forEach(p => {
+                 categorias.forEach(cat => {
                     if (cF && cF !== cat) return;
-                    const r = p.resultados[cat];
+                    const r = p.resultados ? p.resultados[cat] : null;
                     if (r && (r.gL !== undefined || r.npL)) {
                         const loc = stats.find(s => s.id == p.lId), vis = stats.find(s => s.id == p.vId);
                         if (!loc || !vis) return;
@@ -473,9 +516,9 @@
                         if (gL > gV) { loc.g++; loc.pts += 3; vis.p++; } else if (gL < gV) { vis.g++; vis.pts += 3; loc.p++; } else { loc.e++; vis.e++; loc.pts++; vis.pts++; }
                     }
                 });
-            }); 
-            stats.forEach(s => s.dg = s.gf - s.gc); 
-            return stats.sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf); 
+            });
+             stats.forEach(s => s.dg = s.gf - s.gc);
+             return stats.sort((a, b) => b.pts - a.pts || b.dg - a.dg || b.gf - a.gf);
         }
 
         function calcularCategoria(fecha) {
@@ -489,7 +532,8 @@
             return null;
         }
 
-        // --- RENDERIZADOS ---
+        function seleccionarJornada(n) { jornadaActualNum = n; renderPestañasFechas(); renderJornadasAgrupadas(); }
+
         function renderPestañasFechas() {
             const cont = document.getElementById('contenedor-pestañas-fechas');
             if(!cont) return;
@@ -516,7 +560,7 @@
         }
 
         function renderTablasStandings() {
-            const container = document.getElementById('tablas-dinamicas'); 
+            const container = document.getElementById('tablas-dinamicas');
             if (!container) return;
             container.innerHTML = generarHtmlTabla("cat-general", "Clasificación General", calcularEstadisticas(null));
             categorias.forEach(cat => { container.innerHTML += generarHtmlTabla("cat-" + cat.replace('/', ''), `Categoría ${cat}`, calcularEstadisticas(cat)); });
@@ -543,9 +587,8 @@
             return `<div id="${id}" class="scroll-mt-24 mb-10"><div class="flex items-center gap-3 mb-4"><div class="h-8 w-1.5 bg-[#e6338a] rounded-full"></div><h2 class="oswald text-2xl font-black uppercase text-white">${t}</h2></div><div class="table-card"><table class="w-full text-left border-collapse"><thead><tr class="bg-[#4a3b4d]"><th class="table-header-cell text-center text-white/50">#</th><th class="table-header-cell text-white">Equipo</th><th class="table-header-cell text-center text-white bg-[#e6338a]/20">PTS</th><th class="table-header-cell text-center text-white/70">PJ</th><th class="table-header-cell text-center text-white/70">G</th><th class="table-header-cell text-center text-white/70">E</th><th class="table-header-cell text-center text-white/70">P</th><th class="table-header-cell text-center text-white/70">GF/GC</th><th class="table-header-cell text-center text-white/70">DG</th></tr></thead><tbody>${filas}</tbody></table></div></div>`;
         }
 
-        // --- SISTEMA UI ---
         function renderEquiposList() {
-            const container = document.getElementById('lista-clubes-botones'); 
+            const container = document.getElementById('lista-clubes-botones');
             if (!container) return;
             if (equipos.length === 0) container.innerHTML = `<p class="text-white/60 italic py-10 text-center font-bold uppercase text-[10px]">Crea un club primero...</p>`;
             else container.innerHTML = equipos.map(e => `
@@ -554,7 +597,7 @@
                         <div class="flex items-center gap-4 text-left"><img src="${e.logo || 'LOGO.LIGADELASNENAS.jpeg'}" class="w-14 h-14 rounded-full object-contain bg-white border-2 border-pink-100 p-0.5 shadow-sm" onerror="this.src='https://cdn-icons-png.flaticon.com/512/53/53283.png'"><span class="font-black text-gray-800 oswald uppercase text-2xl tracking-widest">${e.nombre}</span></div>
                         <div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center text-pink-600 font-black">→</div>
                     </button>
-                    <button onclick="borrarClubAction(${e.id})" class="bg-red-500 text-white p-4 rounded-3xl shadow-lg active:scale-90"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+                    <button onclick="borrarClubAction(${e.id})" class="bg-red-500 text-white p-4 rounded-3xl shadow-lg active:scale-90"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
                 </div>`).join('');
         }
 
@@ -586,7 +629,6 @@
             tipoFichajeActual = tipo;
             document.getElementById('btn-type-jugadora').className = tipo === 'jugadora' ? "fichaje-type-btn active" : "fichaje-type-btn inactive";
             document.getElementById('btn-type-delegado').className = tipo === 'delegado' ? "fichaje-type-btn active" : "fichaje-type-btn inactive";
-            
             if (tipo === 'delegado') {
                 document.getElementById('fichaje-dni-photo-container').style.display = 'none';
                 document.getElementById('btn-verificar-ia').style.display = 'none';
@@ -600,7 +642,16 @@
         }
 
         function actualizarSelectsEquipos() { const o = equipos.map(e => `<option value="${e.id}">${e.nombre}</option>`).join(''); ['equipoL', 'equipoV', 'clubJugadora'].forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML = o || '<option value="">- Primero crea clubes -</option>'; }); }
-        function actualizarTodo() { renderEquiposList(); renderTablasStandings(); actualizarSelectsEquipos(); renderListaFichajes(); renderJornadasAgrupadas(); }
+        
+        function actualizarTodo() { 
+            renderEquiposList(); 
+            renderTablasStandings(); 
+            actualizarSelectsEquipos(); 
+            renderListaFichajes(); 
+            renderPestañasFechas();
+            renderJornadasAgrupadas(); 
+        }
+
         function mostrarSubvista(subId) { document.querySelectorAll('.sub-view').forEach(sv => sv.classList.remove('active')); const target = document.getElementById(subId); if(target) target.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
         
         function switchView(viewId, btn) {
@@ -609,16 +660,7 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             if(btn) btn.classList.add('active');
             if (viewId === 'equipos') mostrarSubvista('subvista-equipos-lista');
-            if (viewId === 'fechas') { renderPestañasFechas(); renderJornadasAgrupadas(); }
             actualizarTodo();
-        }
-
-        function cambiarSeccionPlantel(seccion) {
-            document.getElementById('tab-plantel-jugadoras').classList.toggle('active', seccion === 'jugadoras');
-            document.getElementById('tab-plantel-partidos').classList.toggle('active', seccion === 'partidos');
-            document.getElementById('contenedor-jugadoras-fichadas').classList.toggle('hidden', seccion !== 'jugadoras');
-            document.getElementById('contenedor-partidos-equipo').classList.toggle('hidden', seccion !== 'partidos');
-            if (seccion === 'partidos') renderPartidosEquipo();
         }
 
         function irACategoria(id, btn) {
@@ -631,65 +673,43 @@
         function abrirDetallePartido(id) {
             const p = partidos.find(match => match.id == id); if (!p) return;
             partidoEditandoId = id; const loc = equipos.find(e => e.id == p.lId), vis = equipos.find(e => e.id == p.vId);
-            document.getElementById('modal-match-fecha').innerText = `${jornadaActualNum}° Fecha`;
+            document.getElementById('modal-match-fecha').innerText = `${p.jornada}° Fecha`;
             document.getElementById('modal-match-nombre-l').innerText = loc?.nombre; document.getElementById('modal-match-nombre-v').innerText = vis?.nombre;
             document.getElementById('modal-match-logo-l').innerHTML = `<img src="${loc?.logo || 'LOGO.LIGADELASNENAS.jpeg'}" class="w-full h-full object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/53/53283.png'">`;
             document.getElementById('modal-match-logo-v').innerHTML = `<img src="${vis?.logo || 'LOGO.LIGADELASNENAS.jpeg'}" class="w-full h-full object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/53/53283.png'">`;
             const cont = document.getElementById('contenedor-inputs-categorias');
             cont.innerHTML = categorias.map(cat => {
-                const r = p.resultados[cat] || {};
+                const r = (p.resultados && p.resultados[cat]) ? p.resultados[cat] : {};
                 const safeCat = cat.replace('/', '-');
                 return `<div class="bg-gray-50 rounded-2xl p-4 border border-gray-100"><div class="flex justify-between items-center mb-3"><span class="text-[9px] font-black text-pink-600 uppercase tracking-widest">${cat}</span><div class="flex gap-2"><label class="flex items-center gap-1"><input type="checkbox" id="npL-${safeCat}" ${r.npL ? 'checked' : ''} class="w-3 h-3 accent-pink-600"> <span class="text-[8px] font-bold text-gray-400 uppercase">NP L</span></label><label class="flex items-center gap-1"><input type="checkbox" id="npV-${safeCat}" ${r.npV ? 'checked' : ''} class="w-3 h-3 accent-pink-600"> <span class="text-[8px] font-bold text-gray-400 uppercase">NP V</span></label></div></div><div class="flex items-center justify-center gap-4"><input type="number" id="valL-${safeCat}" value="${r.gL !== undefined ? r.gL : ''}" placeholder="0" class="w-16 py-3 rounded-xl bg-white border border-gray-200 font-black text-center text-xl text-gray-800 focus:ring-2 focus:ring-pink-200 outline-none"><span class="text-gray-300 font-black">-</span><input type="number" id="valV-${safeCat}" value="${r.gV !== undefined ? r.gV : ''}" placeholder="0" class="w-16 py-3 rounded-xl bg-white border border-gray-200 font-black text-center text-xl text-gray-800 focus:ring-2 focus:ring-pink-200 outline-none"></div></div>`;
             }).join('');
             document.getElementById('match-detail-modal').style.display = 'flex'; document.body.style.overflow = 'hidden';
         }
 
-        function guardarResultadosPartidoActual() {
-            if (!partidoEditandoId) return; const p = partidos.find(m => m.id == partidoEditandoId);
-            categorias.forEach(cat => {
-                const safeCat = cat.replace('/', '-');
-                const gL = document.getElementById(`valL-${safeCat}`).value, gV = document.getElementById(`valV-${safeCat}`).value;
-                const npL = document.getElementById(`npL-${safeCat}`).checked, npV = document.getElementById(`npV-${safeCat}`).checked;
-                if (gL !== "" || gV !== "" || npL || npV) { p.resultados[cat] = { gL: gL !== "" ? parseInt(gL) : 0, gV: gV !== "" ? parseInt(gV) : 0, npL: npL, npV: npV }; }
-            });
-            cerrarDetallePartido(); renderJornadasAgrupadas(); renderTablasStandings(); 
-        }
-
         function previewFoto(event, tipo) { const file = event.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (e) => { const res = e.target.result; if (tipo === 'perfil') { fotoTemporal = res; document.getElementById('image-preview').src = res; document.getElementById('image-preview').classList.remove('hidden'); document.getElementById('placeholder-icon').classList.add('hidden'); } else { fotoDniTemporal = res; document.getElementById('dni-image-preview').src = res; document.getElementById('dni-image-preview').classList.remove('hidden'); document.getElementById('placeholder-dni-icon').classList.add('hidden'); } }; reader.readAsDataURL(file); } }
         function previewLogoClub(event) { const file = event.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (e) => { logoClubTemporal = e.target.result; document.getElementById('club-logo-preview').src = e.target.result; document.getElementById('club-logo-preview').classList.remove('hidden'); document.getElementById('club-placeholder-logo').classList.add('hidden'); }; reader.readAsDataURL(file); } }
         function resetFormFoto() { fotoTemporal = null; fotoDniTemporal = null; document.getElementById('image-preview').classList.add('hidden'); document.getElementById('placeholder-icon').classList.remove('hidden'); document.getElementById('dni-image-preview').classList.add('hidden'); document.getElementById('placeholder-dni-icon').classList.remove('hidden'); }
         function resetFormLogo() { logoClubTemporal = null; document.getElementById('club-logo-preview').classList.add('hidden'); document.getElementById('club-placeholder-logo').classList.remove('hidden'); }
-        function agregarEquipo() { const n = document.getElementById('nombreEquipo').value.trim(); if (!n) return; equipos.push({ id: Date.now(), nombre: n.toUpperCase(), logo: logoClubTemporal }); document.getElementById('nombreEquipo').value = ""; resetFormLogo(); actualizarTodo(); }
-        function borrarClubAction(id) { openConfirmModal("Eliminar Club", "¿Borrar este club?", () => { equipos = equipos.filter(e => e.id != id); jugadoras = jugadoras.filter(j => j.clubId != id); partidos = partidos.filter(p => p.lId != id && p.vId != id); actualizarTodo(); mostrarSubvista('subvista-equipos-lista'); }); }
-        function agregarCruceAlFixture() { const elL = document.getElementById('equipoL'), elV = document.getElementById('equipoV'); const lId = parseInt(elL.value), vId = parseInt(elV.value); if (!lId || !vId || lId === vId) return; partidos.push({ id: Date.now(), jornada: jornadaActualNum, lId: lId, vId: vId, resultados: {} }); cerrarNuevoPartido(); renderJornadasAgrupadas(); }
-        function eliminarCruce(id) { openConfirmModal("Eliminar Cruce", "¿Borrar este partido?", () => { partidos = partidos.filter(p => p.id != id); renderJornadasAgrupadas(); renderTablasStandings(); }); }
-        function verCarnet(id) { const persona = jugadoras.find(j => j.id == id); const club = equipos.find(e => e.id == persona.clubId), verifiedHtml = identidadesVerificadas[persona.dni]?.match ? `<div style="position:absolute; top: 10px; right: 10px; background:#10b981; color:white; font-size:7px; padding:2px 6px; border-radius:4px; z-index:50; font-weight:bold;">VERIFICADO IA</div>` : ""; document.getElementById('id-card-render').innerHTML = `<div class="id-card">${verifiedHtml}<div class="id-card-header"><div class="w-10 h-10 bg-white rounded-full p-0.5 overflow-hidden border-2 border-pink-400 leading-none shadow-sm"><img src="${club?.logo || 'LOGO.LIGADELASNENAS.jpeg'}" class="w-full h-full object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/53/53283.png'"></div><span class="oswald font-black text-sm uppercase leading-none">La Liga de las Nenas</span></div><div class="id-card-body"><div class="id-photo"><img src="${persona.foto || ''}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'"></div><div class="id-details"><div class="id-label">Apellido y Nombre</div><div class="id-value leading-none">${persona.nombre}</div><div class="id-label">Club / Equipo</div><div class="id-value text-pink-600 leading-none">${club?.nombre || '---'}</div><div class="flex gap-4 mt-1 leading-none"><div><div class="id-label">${persona.tipo === 'delegado' ? 'CARGO' : 'CATEGORÍA'}</div><div class="id-value leading-none" style="font-size: 10px;">${persona.tipo === 'delegado' ? 'DELEGADO' : persona.cat}</div></div><div><div class="id-label">DNI / ID</div><div class="id-value leading-none" style="font-size: 10px;">${persona.dni}</div></div></div></div><img src="LOGO.LIGADELASNENAS.jpeg" class="watermark" onerror="this.style.display='none'"></div><div class="id-footer">Oficial 2026</div></div>`; document.getElementById('modal-container').style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+        
+        function verCarnet(id) { 
+            const persona = jugadoras.find(j => j.id == id); 
+            const club = equipos.find(e => e.id == persona.clubId);
+            const verifiedHtml = identidadesVerificadas[persona.dni]?.match ? `<div style="position:absolute; top: 10px; right: 10px; background:#10b981; color:white; font-size:7px; padding:2px 6px; border-radius:4px; z-index:50; font-weight:bold;">VERIFICADO IA</div>` : ""; 
+            document.getElementById('id-card-render').innerHTML = `<div class="id-card">${verifiedHtml}<div class="id-card-header"><div class="w-10 h-10 bg-white rounded-full p-0.5 overflow-hidden border-2 border-pink-400 leading-none shadow-sm"><img src="${club?.logo || 'LOGO.LIGADELASNENAS.jpeg'}" class="w-full h-full object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/53/53283.png'"></div><span class="oswald font-black text-sm uppercase leading-none">La Liga de las Nenas</span></div><div class="id-card-body"><div class="id-photo"><img src="${persona.foto || ''}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'"></div><div class="id-details"><div class="id-label">Apellido y Nombre</div><div class="id-value leading-none">${persona.nombre}</div><div class="id-label">Club / Equipo</div><div class="id-value text-pink-600 leading-none">${club?.nombre || '---'}</div><div class="flex gap-4 mt-1 leading-none"><div><div class="id-label">${persona.tipo === 'delegado' ? 'CARGO' : 'CATEGORÍA'}</div><div class="id-value leading-none" style="font-size: 10px;">${persona.tipo === 'delegado' ? 'DELEGADO' : persona.cat}</div></div><div><div class="id-label">DNI / ID</div><div class="id-value leading-none" style="font-size: 10px;">${persona.dni}</div></div></div></div><img src="LOGO.LIGADELASNENAS.jpeg" class="watermark" onerror="this.style.display='none'"></div><div class="id-footer">Oficial 2026</div></div>`; 
+            document.getElementById('modal-container').style.display = 'flex'; 
+            document.body.style.overflow = 'hidden'; 
+        }
+        
         function verDniDocumento(id) { const persona = jugadoras.find(j => j.id == id), img = persona?.fotoDni; document.getElementById('dni-image-render').innerHTML = img ? `<img src="${img}" class="max-w-full rounded-lg shadow-sm">` : `<p class="text-gray-400 uppercase oswald italic">Sin foto</p>`; document.getElementById('dni-modal-container').style.display = 'flex'; }
         
-        function ficharPersona() {
-            const ape = document.getElementById('apellidoJugadora').value.trim();
-            const nom = document.getElementById('nombreJugadora').value.trim();
-            const d = document.getElementById('dniJugadora').value.trim();
-            const clId = document.getElementById('clubJugadora').value;
-            if (!ape || !nom || !clId || !d) return showStatus("Faltan datos básicos", true);
-            let cat = null;
-            let p = { id: Date.now(), nombre: `${ape} ${nom}`.toUpperCase(), dni: d, clubId: parseInt(clId), tipo: tipoFichajeActual, foto: fotoTemporal };
-            if (tipoFichajeActual === 'jugadora') {
-                const fn = document.getElementById('fechaNacimientoJugadora').value;
-                if (!fn) return showStatus("Falta fecha de nacimiento", true);
-                cat = calcularCategoria(fn);
-                if (!cat) return showStatus("Edad fuera de rango", true);
-                p.fechaNac = fn; p.cat = cat; p.fotoDni = fotoDniTemporal;
-            }
-            jugadoras.push(p);
-            showStatus(tipoFichajeActual === 'delegado' ? "¡Delegado fichado!" : "¡Jugadora fichada!");
-            document.getElementById('apellidoJugadora').value = ""; document.getElementById('nombreJugadora').value = ""; document.getElementById('dniJugadora').value = "";
-            if (tipoFichajeActual === 'jugadora') document.getElementById('fechaNacimientoJugadora').value = "";
-            resetFormFoto(); actualizarTodo(); verCarnet(p.id);
+        function cambiarSeccionPlantel(seccion) {
+            document.getElementById('tab-plantel-jugadoras').classList.toggle('active', seccion === 'jugadoras');
+            document.getElementById('tab-plantel-partidos').classList.toggle('active', seccion === 'partidos');
+            document.getElementById('contenedor-jugadoras-fichadas').classList.toggle('hidden', seccion !== 'jugadoras');
+            document.getElementById('contenedor-partidos-equipo').classList.toggle('hidden', seccion !== 'partidos');
+            if (seccion === 'partidos') renderPartidosEquipo();
         }
 
-        function borrarJugadoraAction(id) { openConfirmModal("Eliminar Persona", "¿Borrar esta ficha?", () => { jugadoras = jugadoras.filter(j => j.id != id); actualizarTodo(); if (categoriaActual && clubActualId) verPlantelDetalle(categoriaActual); }); }
-        
         function verPlantelDetalle(cat) {
             categoriaActual = cat; const club = equipos.find(e => e.id == clubActualId);
             if (!club) return;
@@ -725,7 +745,7 @@
         function renderPartidosEquipo() {
             const container = document.getElementById('contenedor-partidos-equipo'), clubAct = equipos.find(e => e.id == clubActualId), hist = partidos.filter(p => p.lId == clubActualId || p.vId == clubActualId);
             const jugados = [], pendientes = [];
-            hist.forEach(p => { const res = p.resultados[categoriaActual]; if (res && (res.gL !== undefined || res.npL)) jugados.push(p); else pendientes.push(p); });
+            hist.forEach(p => { const res = p.resultados ? p.resultados[categoriaActual] : null; if (res && (res.gL !== undefined || res.npL)) jugados.push(p); else pendientes.push(p); });
             if (hist.length === 0) { container.innerHTML = `<div class="bg-white/40 p-12 rounded-3xl text-center italic text-gray-500">Sin partidos registrados</div>`; return; }
             let html = `<div class="grid grid-cols-2 gap-2 mb-6"><div class="bg-white p-3 rounded-2xl text-center border border-gray-100"><span class="block text-[8px] font-black text-gray-400 uppercase">Jugados</span><span class="text-xl font-black text-pink-600 oswald">${jugados.length}</span></div><div class="bg-white p-3 rounded-2xl text-center border border-gray-100"><span class="block text-[8px] font-black text-gray-400 uppercase">Pendientes</span><span class="text-xl font-black text-gray-400 oswald">${pendientes.length}</span></div></div>`;
             if (pendientes.length > 0) { html += `<h4 class="oswald text-xs font-black uppercase text-gray-400 mb-3 ml-2 text-left">Pendientes</h4>` + pendientes.map(p => { const soyL = p.lId == clubActualId, rival = equipos.find(e => e.id == (soyL ? p.vId : p.lId)); return `<div class="bg-white/60 p-4 rounded-2xl border-2 border-dashed border-gray-200 mb-3 opacity-80"><div class="flex justify-between items-center mb-2"><span class="text-[8px] font-black text-gray-400 uppercase text-left">Fecha ${p.jornada}</span></div><div class="flex items-center justify-between gap-4"><div class="flex items-center gap-2 flex-1 text-left"><img src="${clubAct?.logo || 'LOGO.LIGADELASNENAS.jpeg'}" class="w-6 h-6 rounded-full object-contain grayscale shadow-sm"><span class="oswald text-[10px] text-gray-500 font-bold">${clubAct?.nombre}</span></div><span class="oswald text-sm font-black text-gray-300 mx-2">VS</span><div class="flex items-center gap-2 flex-1 justify-end text-right"><span class="oswald text-[10px] text-gray-500 font-bold">${rival?.nombre}</span><img src="${rival?.logo || 'LOGO.LIGADELASNENAS.jpeg'}" class="w-6 h-6 rounded-full object-contain grayscale shadow-sm"></div></div></div>`; }).join(''); }
@@ -733,7 +753,7 @@
             container.innerHTML = html;
         }
 
-        window.onload = () => { actualizarTodo(); };
+        window.onload = () => { if(typeof actualizarTodo === 'function') actualizarTodo(); };
         document.addEventListener('keydown', (e) => { if (e.key === "Escape") { cerrarCarnet(); cerrarDniModal(); closeConfirmModal(); cerrarDetallePartido(); cerrarNuevoPartido(); } });
         window.onscroll = function() { const btn = document.getElementById("btnVolverArriba"); if (btn) btn.style.display = (window.scrollY > 300) ? "block" : "none"; };
     </script>
