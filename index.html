@@ -291,12 +291,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Global State
-        window.equipos = []; window.partidos = []; window.jugadoras = [];
-        window.identidadesVerificadas = {}; window.jornadaActualNum = 1;
-        window.totalJornadas = 1; window.categorias = ["2011/12", "2013/14", "2015/16", "2017/18", "2019/20"];
-
-        // ImgBB Upload
+        // Subida con reintentos y compresión
         async function subirAInternet(base64) {
             if (!base64) return null;
             const body = new FormData();
@@ -304,7 +299,7 @@
             try {
                 const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: body });
                 const json = await res.json();
-                return json.data.url;
+                return json.success ? json.data.url : null;
             } catch (e) { return null; }
         }
 
@@ -315,7 +310,7 @@
             window.jugadoras = d.jugadoras ? Object.values(d.jugadoras) : [];
             window.identidadesVerificadas = d.identidades || {};
             window.totalJornadas = d.totalJornadas || 1;
-            if(typeof actualizarTodo === 'function') actualizarTodo();
+            actualizarTodo();
         });
 
         window.agregarEquipo = async function() {
@@ -324,7 +319,7 @@
             showStatus("Subiendo escudo...");
             const url = await subirAInternet(window.logoClubTemporal);
             const r = push(ref(db, 'liga/equipos'));
-            set(r, { id: Date.now(), nombre: n.toUpperCase(), logo: url });
+            set(r, { id: Date.now(), nombre: n.toUpperCase(), logo: url || 'LOGO.LIGADELASNENAS.jpeg' });
             document.getElementById('nombreEquipo').value = ""; window.resetFormLogo();
             showStatus("Equipo guardado");
         };
@@ -336,7 +331,7 @@
             const clId = document.getElementById('clubJugadora').value;
             if (!ape || !nom || !clId || !d) return showStatus("Faltan datos", true);
             
-            showStatus("Subiendo fotos a la nube...");
+            showStatus("Subiendo fotos...");
             const urlPerfil = await subirAInternet(window.fotoTemporal);
             const urlDni = await subirAInternet(window.fotoDniTemporal);
 
@@ -347,12 +342,11 @@
             }
             set(push(ref(db, 'liga/jugadoras')), p);
             if(window.identidadesVerificadas[d]) set(ref(db, `liga/identidades/${d}`), window.identidadesVerificadas[d]);
-            showStatus("¡Fichada con éxito!");
+            showStatus("Fichaje exitoso");
             document.getElementById('apellidoJugadora').value = ""; document.getElementById('nombreJugadora').value = ""; document.getElementById('dniJugadora').value = "";
             window.resetFormFoto();
         };
 
-        // ... Mantenemos funciones de borrado y resultados ...
         window.borrarClubAction = (id) => { openConfirmModal("Borrar Club", "¿Seguro?", () => { onValue(ref(db, 'liga/equipos'), (s) => { s.forEach(c => { if(c.val().id == id) remove(ref(db, `liga/equipos/${c.key}`)); }); }, {onlyOnce:true}); }); };
         window.borrarJugadoraAction = (id) => { openConfirmModal("Borrar Persona", "¿Seguro?", () => { onValue(ref(db, 'liga/jugadoras'), (s) => { s.forEach(c => { if(c.val().id == id) remove(ref(db, `liga/jugadoras/${c.key}`)); }); }, {onlyOnce:true}); }); };
         window.agregarCruceAlFixture = () => { const l = parseInt(document.getElementById('equipoL').value), v = parseInt(document.getElementById('equipoV').value); if(!l || !v || l==v) return; set(push(ref(db, 'liga/partidos')), { id: Date.now(), jornada: window.jornadaActualNum, lId: l, vId: v, resultados: {} }); cerrarNuevoPartido(); };
@@ -409,6 +403,7 @@
             } catch (e) { showStatus("Error IA", true); } finally { btn.disabled = false; btn.innerHTML = "Verificar con IA"; }
         }
 
+        // --- CALCULO ESTADISTICAS CON TODAS LAS COLUMNAS ---
         function calcularEstadisticas(cF) {
              let stats = equipos.map(e => ({ id: e.id, nombre: e.nombre, logo: e.logo, pts: 0, pj: 0, g: 0, e: 0, p: 0, gf: 0, gc: 0, dg: 0 }));
              partidos.forEach(p => {
@@ -434,8 +429,57 @@
 
         function renderPestañasFechas() { const c = document.getElementById('contenedor-pestañas-fechas'); if(!c) return; let h = ""; for(let i=1; i <= totalJornadas; i++) h += `<div onclick="seleccionarJornada(${i})" class="date-tab ${jornadaActualNum === i ? 'active' : ''}">${i}° Fecha</div>`; h += `<div onclick="agregarNuevaJornada()" class="date-tab new-date-btn">+ Nueva</div>`; c.innerHTML = h; }
         function renderJornadasAgrupadas() { const c = document.getElementById('contenedor-jornadas-historial'); const f = partidos.filter(p => p.jornada == jornadaActualNum); if(!f.length) { c.innerHTML = "<p class='text-center py-10 text-gray-400'>No hay partidos</p>"; return; } c.innerHTML = f.map(p => { const l=equipos.find(e=>e.id==p.lId), v=equipos.find(e=>e.id==p.vId); return `<div onclick="abrirDetallePartido(${p.id})" class="bg-white rounded-3xl p-6 mb-3 shadow-md flex items-center justify-between"><div class="flex-1 text-center"><img src="${l?.logo || ''}" class="w-10 h-10 mx-auto mb-1 object-contain"><span class="oswald text-[10px] block truncate">${l?.nombre}</span></div><span class="oswald text-xl text-gray-200 px-4">VS</span><div class="flex-1 text-center"><img src="${v?.logo || ''}" class="w-10 h-10 mx-auto mb-1 object-contain"><span class="oswald text-[10px] block truncate">${v?.nombre}</span></div><button onclick="event.stopPropagation(); eliminarCruce(${p.id})" class="ml-2">🗑️</button></div>`; }).join(''); }
-        function renderTablasStandings() { const c = document.getElementById('tablas-dinamicas'); if(!c) return; c.innerHTML = generarHtmlTabla("cat-general", "Clasificación General", calcularEstadisticas(null)); categorias.forEach(cat => { c.innerHTML += generarHtmlTabla("cat-" + cat.replace('/', ''), `Categoría ${cat}`, calcularEstadisticas(cat)); }); }
-        function generarHtmlTabla(id, t, ls) { let f = ls.map((e, i) => `<tr class="table-row"><td class="table-cell text-center">${i+1}</td><td class="table-cell flex items-center gap-2"><img src="${e.logo || ''}" class="w-5 h-5 object-contain">${e.nombre}</td><td class="table-cell text-center pts-cell">${e.pts}</td><td class="table-cell text-center">${e.pj}</td><td class="table-cell text-center">${e.gf}/${e.gc}</td></tr>`).join(''); return `<div id="${id}" class="mb-10"><h2 class="oswald text-xl font-bold text-white mb-3 uppercase">${t}</h2><div class="table-card"><table class="w-full"><thead><tr class="bg-[#4a3b4d] text-white text-[9px]"><th>#</th><th>Equipo</th><th>PTS</th><th>PJ</th><th>GF/GC</th></tr></thead><tbody>${f}</tbody></table></div></div>`; }
+        
+        // --- RENDER TABLAS RECONSTRUIDO CON TODAS LAS COLUMNAS ---
+        function renderTablasStandings() { 
+            const c = document.getElementById('tablas-dinamicas'); 
+            if(!c) return; 
+            c.innerHTML = generarHtmlTabla("cat-general", "Clasificación General", calcularEstadisticas(null)); 
+            categorias.forEach(cat => { c.innerHTML += generarHtmlTabla("cat-" + cat.replace('/', ''), `Categoría ${cat}`, calcularEstadisticas(cat)); }); 
+        }
+
+        function generarHtmlTabla(id, t, ls) { 
+            let f = ls.map((e, i) => `
+                <tr class="table-row">
+                    <td class="table-cell text-center text-gray-400 w-8">${i+1}</td>
+                    <td class="table-cell px-2">
+                        <div class="flex items-center gap-2">
+                            <img src="${e.logo || 'LOGO.LIGADELASNENAS.jpeg'}" class="w-5 h-5 rounded-full object-contain bg-white border shadow-xs" onerror="this.src='https://cdn-icons-png.flaticon.com/512/53/53283.png'">
+                            <span class="truncate uppercase oswald tracking-tight text-gray-700" style="max-width: 100px;">${e.nombre}</span>
+                        </div>
+                    </td>
+                    <td class="table-cell text-center pts-cell">${e.pts}</td>
+                    <td class="table-cell text-center">${e.pj}</td>
+                    <td class="table-cell text-center text-green-500">${e.g}</td>
+                    <td class="table-cell text-center text-yellow-500">${e.e}</td>
+                    <td class="table-cell text-center text-red-500">${e.p}</td>
+                    <td class="table-cell text-center text-[9px] text-gray-400">${e.gf}/${e.gc}</td>
+                    <td class="table-cell text-center font-black">${e.dg > 0 ? '+' + e.dg : e.dg}</td>
+                </tr>`).join(''); 
+            return `
+                <div id="${id}" class="mb-10">
+                    <div class="flex items-center gap-3 mb-4"><div class="h-8 w-1.5 bg-[#e6338a] rounded-full"></div><h2 class="oswald text-2xl font-black uppercase text-white">${t}</h2></div>
+                    <div class="table-card">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-[#4a3b4d]">
+                                    <th class="table-header-cell text-center text-white/50">#</th>
+                                    <th class="table-header-cell text-white">Equipo</th>
+                                    <th class="table-header-cell text-center text-white bg-[#e6338a]/20">PTS</th>
+                                    <th class="table-header-cell text-center text-white/70">PJ</th>
+                                    <th class="table-header-cell text-center text-white/70">G</th>
+                                    <th class="table-header-cell text-center text-white/70">E</th>
+                                    <th class="table-header-cell text-center text-white/70">P</th>
+                                    <th class="table-header-cell text-center text-white/70">GF/GC</th>
+                                    <th class="table-header-cell text-center text-white/70">DG</th>
+                                </tr>
+                            </thead>
+                            <tbody>${f}</tbody>
+                        </table>
+                    </div>
+                </div>`; 
+        }
+
         function renderEquiposList() { const c = document.getElementById('lista-clubes-botones'); if(!c) return; c.innerHTML = equipos.map(e => `<div class="bg-white p-4 rounded-3xl mb-2 flex justify-between items-center shadow-sm"><div onclick="verCategoriasClub(${e.id})" class="flex items-center gap-3"><img src="${e.logo || ''}" class="w-10 h-10 object-contain"><span class="oswald font-bold">${e.nombre}</span></div><button onclick="borrarClubAction(${e.id})">🗑️</button></div>`).join(''); }
         function verCategoriasClub(id) { clubActualId = id; const c = equipos.find(e => e.id == id); document.getElementById('detalle-club-nombre').innerText = c.nombre; document.getElementById('detalle-club-escudo').innerHTML = `<img src="${c.logo}" class="w-10 h-10">`; const b = document.getElementById('lista-categorias-botones'); b.innerHTML = categorias.map(cat => `<button onclick="verPlantelDetalle('${cat}')" class="bg-white p-4 rounded-2xl mb-2 w-full flex justify-between font-bold"><span>${cat}</span><span>→</span></button>`).join(''); mostrarSubvista('subvista-club-detalle'); }
         function renderListaFichajes() { const c = document.getElementById('lista-fichajes'); if(!c) return; c.innerHTML = ""; equipos.forEach(eq => { const js = jugadoras.filter(j => j.clubId == eq.id); if(js.length) { let h = `<div class="bg-white rounded-3xl overflow-hidden mb-4"><div class="bg-[#4a3b4d] p-3 text-white text-xs font-bold">${eq.nombre}</div>`; h += js.map(j => `<div class="p-3 flex justify-between items-center border-b last:border-0"><div class="flex items-center gap-2"><img src="${j.foto || ''}" class="w-8 h-8 rounded object-cover"><div class="text-[10px] font-bold"><div>${j.nombre}</div><div class="text-pink-500">${j.cat || 'DEL'}</div></div></div><div class="flex gap-2"><button onclick="verCarnet(${j.id})">🪪</button><button onclick="borrarJugadoraAction(${j.id})">🗑️</button></div></div>`).join(''); c.innerHTML += h + "</div>"; } }); }
