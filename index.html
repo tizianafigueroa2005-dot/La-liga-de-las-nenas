@@ -449,20 +449,20 @@
 
     <main class="max-w-md mx-auto px-4 mt-4 text-center">        
         <!-- Navegación Principal -->        
-        <div class="grid grid-cols-4 gap-2 mb-8 leading-none">            
-            <button onclick="switchView('posiciones', this)" class="tab-btn active rounded-2xl py-4 flex flex-col items-center justify-center gap-1 shadow-sm">                
+        <div class="flex gap-2 mb-8 leading-none w-full">            
+            <button onclick="switchView('posiciones', this)" class="tab-btn active rounded-2xl py-4 flex-1 flex flex-col items-center justify-center gap-1 shadow-sm">                
                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>                
                 <span class="text-[9px] font-bold uppercase leading-tight">Tablas</span>            
             </button>            
-            <button onclick="switchView('fechas', this)" class="tab-btn rounded-2xl py-4 flex flex-col items-center justify-center gap-1 shadow-sm">                
+            <button onclick="switchView('fechas', this)" class="tab-btn rounded-2xl py-4 flex-1 flex flex-col items-center justify-center gap-1 shadow-sm">                
                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="m13 19 2 2 5-5-2-2"/><path d="M8.5 22.5 12 19l-7-7-3.5 3.5Z"/><path d="m18 13 3 3"/></svg>                
                 <span class="text-[9px] font-bold uppercase leading-tight">Fixture y Resultados</span>            
             </button>            
-            <button onclick="switchView('equipos', this)" class="tab-btn rounded-2xl py-4 flex flex-col items-center justify-center gap-1 shadow-sm text-center">                
+            <button onclick="switchView('equipos', this)" class="tab-btn rounded-2xl py-4 flex-1 flex flex-col items-center justify-center gap-1 shadow-sm text-center">                
                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>                
                 <span class="text-[9px] font-bold uppercase leading-tight">Equipos</span>            
             </button>            
-            <button onclick="switchView('fichar', this)" class="tab-btn rounded-2xl py-4 flex flex-col items-center justify-center gap-1 shadow-sm">                
+            <button onclick="switchView('fichar', this)" class="tab-btn rounded-2xl py-4 flex-1 flex flex-col items-center justify-center gap-1 shadow-sm admin-only">                
                 <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/></svg>                
                 <span class="text-[9px] font-bold uppercase leading-tight">Fichar</span>            
             </button>        
@@ -696,6 +696,12 @@
                 document.body.classList.remove('admin-mode');
                 showStatus("Sesión cerrada correctamente");
                 document.getElementById('auth-icon-path').setAttribute('d', 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z');
+                
+                // Si el usuario estaba en la pestaña de fichar, lo devolvemos a posiciones
+                if (document.getElementById('vista-fichar').classList.contains('active')) {
+                    switchView('posiciones', document.querySelector('[onclick="switchView(\'posiciones\', this)"]'));
+                }
+                
                 actualizarTodo();
             } else {
                 document.getElementById('auth-modal').style.display = 'flex';
@@ -1609,4 +1615,3 @@
     </script>
 </body>
 </html>
-
